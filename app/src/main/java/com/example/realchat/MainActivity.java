@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
             Bundle extras = new Bundle();
             extras.putString(Constants.EXTRA_CHANNEL_ID, channel);
-            extras.putString(Constants.USERNAME, name);
+            extras.putString(Constants.USERNAME, name != null ? name: "guest");
 
             intent.putExtras(extras);
             startActivity(intent);

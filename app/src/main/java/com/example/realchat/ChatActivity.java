@@ -44,7 +44,8 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
         messagesView = (ListView) findViewById(R.id.messages_view);
         messagesView.setAdapter(messageAdapter);
 
-        MemberData data = new MemberData(getRandomName(), getRandomColor());
+        // getRandomName()
+        MemberData data = new MemberData(this.username, getRandomColor());
 
         Log.d(Constants.TAG, "onCreate: this.username " + this.username);
 
