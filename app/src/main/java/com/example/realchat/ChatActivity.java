@@ -18,9 +18,9 @@ import com.scaledrone.lib.Scaledrone;
 import java.util.Random;
 
 public class ChatActivity extends AppCompatActivity implements RoomListener {
-    public static final String EXTRA_MESSAGE = "com.example.realchat.MESSAGE";
     // replace this with a real channelID from Scaledrone dashboard
     private String channelID = "QwyFteAahHpzv1UB";
+    private String username = "guest";
     private String roomName = "observable-room";
     private EditText editText;
     private Scaledrone scaledrone;
@@ -32,8 +32,11 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
         setContentView(R.layout.activity_chat);
 
         Intent intent = getIntent();
-        String kenh = intent.getStringExtra(EXTRA_MESSAGE);
-        Log.d(Constants.TAG, "onCreate: " + kenh);
+        Bundle extras = intent.getExtras();
+
+        this.channelID = intent.getStringExtra(Constants.EXTRA_CHANNEL_ID);
+        this.username = intent.getStringExtra(Constants.USERNAME);
+
 
         editText = (EditText) findViewById(R.id.editText);
 
@@ -43,33 +46,38 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
 
         MemberData data = new MemberData(getRandomName(), getRandomColor());
 
-        scaledrone = new Scaledrone(channelID, data);
+        Log.d(Constants.TAG, "onCreate: this.username " + this.username);
+
+        scaledrone = new Scaledrone(this.channelID, data);
         scaledrone.connect(new Listener() {
             @Override
             public void onOpen() {
-                System.out.println("Scaledrone connection open");
+                Log.d(Constants.TAG, "Scaledrone connection open");
                 scaledrone.subscribe(roomName, ChatActivity.this);
             }
 
             @Override
             public void onOpenFailure(Exception ex) {
-                System.err.println(ex);
+                Log.e(Constants.TAG, "onOpenFailure: " + ex );
             }
 
             @Override
             public void onFailure(Exception ex) {
-                System.err.println(ex);
+                Log.e(Constants.TAG, "onFailure: " + ex );
             }
 
             @Override
             public void onClosed(String reason) {
-                System.err.println(reason);
+                Log.e(Constants.TAG, "reason: " + reason );
             }
         });
     }
 
     public void sendMessage(View view) {
         String message = editText.getText().toString();
+
+        Log.d(Constants.TAG, "sendMessage: " + message);
+
         if (message.length() > 0) {
             scaledrone.publish(roomName, message);
             editText.getText().clear();
@@ -78,7 +86,7 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
 
     @Override
     public void onOpen(Room room) {
-        System.out.println("Conneted to room");
+        Log.d(Constants.TAG, "Conneted to room");
     }
 
     @Override
@@ -88,6 +96,7 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
 
     @Override
     public void onMessage(Room room, com.scaledrone.lib.Message receivedMessage) {
+        Log.d(Constants.TAG, "Vao day ne");
         final ObjectMapper mapper = new ObjectMapper();
         try {
             final MemberData data = mapper.treeToValue(receivedMessage.getMember().getClientData(), MemberData.class);
@@ -101,6 +110,7 @@ public class ChatActivity extends AppCompatActivity implements RoomListener {
                 }
             });
         } catch (JsonProcessingException e) {
+            Log.e(Constants.TAG, "onMessage: " + e);
             e.printStackTrace();
         }
     }

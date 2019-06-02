@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String EXTRA_MESSAGE = "com.example.realchat.MESSAGE";
 
-    String[] mobileArray = {"Java","C++","C#","CSS",
-            "HTML","XML",".Net","VisualBasic", "SQL", "Python", "PHP"};
+    String[] mobileArray = {"QwyFteAahHpzv1UB"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,18 +25,20 @@ public class MainActivity extends AppCompatActivity {
 
     /** Called when the user taps the Send button */
     public void chooseChannel(View view) {
-        Log.d(Constants.TAG, "chooseChannel:nene ");
-
         try {
             Intent intent = new Intent(this, ChatActivity.class);
 
             TextView temp = (TextView) view;
+            EditText inputEditText = (EditText) findViewById(R.id.inputEditText);
+
             String channel = temp.getText().toString();
+            String name = inputEditText.getText().toString();
 
-            Log.d(Constants.TAG, "chooseChannel: " + channel);
+            Bundle extras = new Bundle();
+            extras.putString(Constants.EXTRA_CHANNEL_ID, channel);
+            extras.putString(Constants.USERNAME, name);
 
-            String message = "abc";
-            intent.putExtra(EXTRA_MESSAGE, message);
+            intent.putExtras(extras);
             startActivity(intent);
         } catch(Exception e) {
             Log.e(Constants.TAG, "chooseChannel: " + e);
